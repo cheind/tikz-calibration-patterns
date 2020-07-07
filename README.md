@@ -1,5 +1,5 @@
 # chessboard-pattern
-Generate chessboard patterns for camera calibration purposes using Latex/TikZ. Board dimensions, colors and auxiliary printing is customizable.
+Generate chessboard patterns for camera calibration purposes using Latex/TikZ. Board dimensions, colors and meta info are customizable.
 
 ![](./Chessboard.svg)
 
