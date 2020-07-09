@@ -1,0 +1,45 @@
+%
+% Sunflower pattern
+% For circular markers with high circle density
+% https://en.wikipedia.org/wiki/Golden_ratio
+%
+% 2020, Thomas Pönitz, https://github.com/cheind/
+
+\documentclass[tikz,border=10mm]{standalone}
+\usepackage{tikz}
+\usepackage{ifthen}
+
+% Parameters
+\def\N{100} % number of circles
+\def\R{3}   % circle radius
+\def\D{50}  % outer radius
+\def\U{mm}  % unit
+\definecolor{fgcolor}{cmyk}{60,40,40,100}   % rich black as foreground color
+\definecolor{bgcolor}{cmyk}{0,0,0,0}        % white as background color
+
+\xdef\devmode{1}
+
+\newcommand*{\sunflower}[3]{%
+    \foreach \i in {1,...,#1}
+    {
+        \pgfmathsetmacro\radius{sqrt(\i / #1) * #2}
+        \pgfmathsetmacro\turns{mod((1 + sqrt(5)) / 2 * \i, 1)}
+        \pgfmathsetmacro\x{\radius * cos(\turns * 360)}
+        \pgfmathsetmacro\y{\radius * sin(\turns * 360)}
+        \draw[inner sep=0,line width=0,fill=fgcolor] (\x, \y) circle (#3);
+        \ifthenelse{\devmode=1}{%
+            %  helper text
+            \node[color=bgcolor] at (\x, \y) {\tiny \i};
+        }{}
+    }
+}
+
+\begin{document}
+\begin{tikzpicture}[x=1\U,y=-1\U]
+    \ifthenelse{\devmode = 1}{%
+        \draw[help lines,inner sep=0] (0, 0) circle (\D);
+    }{}
+    \pgfmathparse{\D - \R}
+    \sunflower{\N}{\pgfmathresult}{\R}
+\end{tikzpicture}
+\end{document}
