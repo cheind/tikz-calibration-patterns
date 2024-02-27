@@ -10,10 +10,11 @@
 \newif\ifprintcontrols
 
 % Parameters
-\def\N{8}                                   % number of inner corners in X-dir
-\def\M{5}                                   % number of inner corners in Y-dir
-\def\S{6.8}                                 % unit-less length of square
+\def\N{7}                                   % number of inner corners in X-dir
+\def\M{4}                                   % number of inner corners in Y-dir
+\def\S{3.4}                                 % unit-less length of square
 \def\U{cm}                                  % units
+\def\T{https://github.com/cheind/tikz-calibration-patterns} % custom text printed below units
 \definecolor{fgcolor}{cmyk}{60,40,40,100}   % rich black as foreground color
 \definecolor{bgcolor}{cmyk}{0,0,0,0}        % white as background color
 \printdimstrue                              % print paper dimensions
@@ -23,16 +24,22 @@
 \begin{tikzpicture}[x=\S\U,y=\S\U]
 \fill[bgcolor] (0,0) rectangle (\N+3,\M+3);
 \ifprintdims
-    \node[align=center,scale=1,text=fgcolor] at (0.5, \M+2.8) 
-        {pattern $\N\times\M$/$\S\U$\\total  $\pscalculate{(\N+3) * \S}\U\times\pscalculate{(\M+3)*\S}\U$};
+    \node[below right,align=left,scale=1,text=fgcolor] at (0.11, \M+3-0.11) 
+        {pattern $\N\times\M$/$\S\U$\\total  $\pscalculate{(\N+3) * \S}\U\times\pscalculate{(\M+3)*\S}\U$\\\T};
 \fi
-\begin{scope}[shift={(1,1)}]
-\foreach \y in {0,1,...,\numexpr\M}{
-    \foreach \x in {0,1,...,\numexpr\N}{
-        \pgfmathparse{mod(\x+\y,2) ? "fgcolor" : "bgcolor"}
-        \edef\rcolor{\pgfmathresult}
-        \fill[\rcolor] (\x ,\y) rectangle (1+\x,1+\y);
-}}
+% tikz origin is lower-left with x to right and y up. 
+% for square drawing we change the origin and orientation to top-left
+% corner of first-black square.
+\begin{scope}[shift={(1,2+\M)}]
+    \begin{scope}[yscale=-1]
+        \foreach \y in {0,1,...,\numexpr\M}{
+            \foreach \x in {0,1,...,\numexpr\N}{
+                \pgfmathparse{mod(\x+\y,2) ? "bgcolor" : "fgcolor"}
+                \edef\rcolor{\pgfmathresult}
+                \fill[\rcolor] (\x ,\y) rectangle (1+\x,1+\y);
+            }
+        }
+    \end{scope}
 \end{scope}
 \ifprintcontrols
     \fill[fgcolor] (0,0) rectangle (0.1,0.1);
